@@ -34,24 +34,84 @@ Permite practicar programación paralela distribuida sin necesidad de infraestru
          /shared montado en todos los nodos
 ```
 
-## Requisitos
+## Instalación y uso en Windows (desde cero)
 
-- [Docker Desktop](https://www.docker.com/products/docker-desktop) (Windows / macOS)  
-- Docker Engine + Compose plugin (Linux)
+### Paso 1 — Instalar WSL2
+
+Abrí **PowerShell como Administrador** (click derecho → Ejecutar como administrador) y ejecutá:
+
+```powershell
+wsl --install
+wsl --update
+```
+
+Reiniciá la PC cuando lo pida.
+
+### Paso 2 — Instalar Docker Desktop
+
+1. Descargá Docker Desktop desde: https://www.docker.com/products/docker-desktop
+2. Ejecutá el instalador con las opciones por defecto
+3. Reiniciá si lo pide
+4. Abrí **Docker Desktop** desde el menú Inicio y esperá a que el ícono de la ballena en la barra de tareas (abajo a la derecha) quede quieto — eso indica que está listo
+
+Verificá que funciona abriendo PowerShell y ejecutando:
+```powershell
+docker --version
+```
+
+### Paso 3 — Instalar Git
+
+Descargá Git desde: https://git-scm.com/download/win  
+Instalalo con todas las opciones por defecto.
+
+Cerrá y volvé a abrir PowerShell para que tome el PATH actualizado.
+
+### Paso 4 — Clonar y levantar el cluster
+
+```powershell
+git clone https://github.com/mendezgarabetti/hpc-cluster-docker
+cd hpc-cluster-docker
+docker compose up -d
+```
+
+La primera vez tarda ~5 minutos mientras descarga y construye la imagen.
+
+### Paso 5 — Verificar que los nodos están corriendo
+
+```powershell
+docker ps
+```
+
+Deberías ver 4 contenedores: `master`, `n01`, `n02`, `n03` en estado `Up`.
+
+### Paso 6 — Entrar al cluster
+
+```powershell
+docker exec -it master bash
+```
+
+Ya estás dentro del nodo master. Continuá con la sección **Uso desde el master**.
+
+---
+
+## Instalación en Linux (Ubuntu/Debian)
 
 ```bash
-# Linux (Ubuntu/Debian)
-sudo apt install docker.io docker-compose-plugin
+sudo apt install docker.io docker-compose-plugin git
 sudo usermod -aG docker $USER   # cerrar sesión y volver a entrar
 ```
 
-## Inicio rápido
+Luego seguí desde el **Paso 4** de la sección Windows.
+
+---
+
+## Inicio rápido (si ya tenés Docker y Git instalados)
 
 ```bash
 git clone https://github.com/mendezgarabetti/hpc-cluster-docker
 cd hpc-cluster-docker
 
-docker compose up -d        # primera vez tarda ~5 min (descarga imagen base)
+docker compose up -d         # primera vez tarda ~5 min
 docker exec -it master bash  # entrar al nodo master
 ```
 
