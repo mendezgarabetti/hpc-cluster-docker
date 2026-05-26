@@ -1,0 +1,85 @@
+version: '3.8'
+
+# Cluster HPC didáctico
+# Topología: 1 master (slurmctld + NFS server) + 3 nodos de cómputo (slurmd + NFS client)
+# Stack: SLURM · OpenMPI · OpenMP · NFS · MUNGE · SSH sin contraseña
+
+services:
+
+  master:
+    build: .
+    image: hpc-cluster:latest
+    hostname: master
+    container_name: master
+    privileged: true          # necesario para servidor NFS y cgroups
+    networks:
+      hpc-net:
+        ipv4_address: 172.20.0.10
+    volumes:
+      - munge-key:/etc/munge      # clave MUNGE compartida con los nodos
+      - ./shared:/shared          # directorio compartido (bind mount desde host)
+      - ./scripts:/scripts:ro     # scripts montados desde host (sin rebuild)
+    command: /scripts/start-master.sh
+    restart: unless-stopped
+
+  n01:
+    build: .
+    image: hpc-cluster:latest
+    hostname: n01
+    container_name: n01
+    privileged: true          # necesario para montar NFS
+    networks:
+      hpc-net:
+        ipv4_address: 172.20.0.11
+    volumes:
+      - munge-key:/etc/munge  # misma clave que el master
+      - ./scripts:/scripts:ro
+    command: /scripts/start-compute.sh
+    depends_on:
+      - master
+    restart: unless-stopped
+
+  n02:
+    build: .
+    image: hpc-cluster:latest
+    hostname: n02
+    container_name: n02
+    privileged: true
+    networks:
+      hpc-net:
+        ipv4_address: 172.20.0.12
+    volumes:
+      - munge-key:/etc/munge
+      - ./scripts:/scripts:ro
+    command: /scripts/start-compute.sh
+    depends_on:
+      - master
+    restart: unless-stopped
+
+  n03:
+    build: .
+    image: hpc-cluster:latest
+    hostname: n03
+    container_name: n03
+    privileged: true
+    networks:
+      hpc-net:
+        ipv4_address: 172.20.0.13
+    volumes:
+      - munge-key:/etc/munge
+      - ./scripts:/scripts:ro
+    command: /scripts/start-compute.sh
+    depends_on:
+      - master
+    restart: unless-stopped
+
+networks:
+  hpc-net:
+    driver: bridge
+    ipam:
+      driver: default
+      config:
+        - subnet: 172.20.0.0/24
+
+volumes:
+  munge-key:    # clave de autenticación MUNGE (compartida entre todos los nodos)

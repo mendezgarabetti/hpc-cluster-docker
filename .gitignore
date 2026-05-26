@@ -1,0 +1,5 @@
+shared/resultados/*
+!shared/resultados/.gitkeep
+shared/ejemplos/hello_mpi
+shared/ejemplos/hello_omp
+shared/ejemplos/hybrid
