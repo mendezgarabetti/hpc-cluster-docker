@@ -28,8 +28,9 @@ RUN apt-get update && apt-get install -y \
 RUN useradd -m -u 1500 -s /bin/bash hpcuser && \
     echo "hpcuser ALL=(ALL) NOPASSWD:ALL" >> /etc/sudoers
 
-# slurm necesita acceder al socket de munge para autenticar jobs
-RUN usermod -aG munge slurm
+# slurm y hpcuser necesitan acceder al socket de munge para autenticar jobs
+RUN usermod -aG munge slurm && \
+    usermod -aG munge hpcuser
 
 # Directorios SLURM (usuario slurm creado por el paquete slurm-wlm)
 RUN mkdir -p \
