@@ -22,6 +22,7 @@ RUN apt-get update && apt-get install -y \
     iputils-ping \
     net-tools \
     htop \
+    dos2unix \
     && rm -rf /var/lib/apt/lists/*
 
 # Usuario para ejecutar trabajos (mismo UID en todos los nodos — imagen común)
