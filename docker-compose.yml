@@ -19,7 +19,7 @@ services:
       - munge-key:/etc/munge      # clave MUNGE compartida con los nodos
       - ./shared:/shared          # directorio compartido (bind mount desde host)
       - ./scripts:/scripts:ro     # scripts montados desde host (sin rebuild)
-    command: bash -c "dos2unix /scripts/*.sh 2>/dev/null; bash /scripts/start-master.sh"
+    command: bash -c "cp /scripts/start-master.sh /tmp/start-master.sh && dos2unix /tmp/start-master.sh && bash /tmp/start-master.sh"
     restart: unless-stopped
 
   n01:
@@ -34,7 +34,7 @@ services:
     volumes:
       - munge-key:/etc/munge  # misma clave que el master
       - ./scripts:/scripts:ro
-    command: bash -c "dos2unix /scripts/*.sh 2>/dev/null; bash /scripts/start-compute.sh"
+    command: bash -c "cp /scripts/start-compute.sh /tmp/start-compute.sh && dos2unix /tmp/start-compute.sh && bash /tmp/start-compute.sh"
     depends_on:
       - master
     restart: unless-stopped
@@ -51,7 +51,7 @@ services:
     volumes:
       - munge-key:/etc/munge
       - ./scripts:/scripts:ro
-    command: bash -c "dos2unix /scripts/*.sh 2>/dev/null; bash /scripts/start-compute.sh"
+    command: bash -c "cp /scripts/start-compute.sh /tmp/start-compute.sh && dos2unix /tmp/start-compute.sh && bash /tmp/start-compute.sh"
     depends_on:
       - master
     restart: unless-stopped
@@ -68,7 +68,7 @@ services:
     volumes:
       - munge-key:/etc/munge
       - ./scripts:/scripts:ro
-    command: bash -c "dos2unix /scripts/*.sh 2>/dev/null; bash /scripts/start-compute.sh"
+    command: bash -c "cp /scripts/start-compute.sh /tmp/start-compute.sh && dos2unix /tmp/start-compute.sh && bash /tmp/start-compute.sh"
     depends_on:
       - master
     restart: unless-stopped
