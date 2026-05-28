@@ -1,3 +1,6 @@
+# Actividades — solo en disco local
+ACTIVIDAD_PRACTICA*
+
 shared/resultados/*
 !shared/resultados/.gitkeep
 shared/ejemplos/hello_mpi
